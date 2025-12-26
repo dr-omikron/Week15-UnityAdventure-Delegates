@@ -123,6 +123,59 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &170960194
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 170960195}
+  - component: {fileID: 170960196}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &170960195
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170960194}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &170960196
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170960194}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d7b3514a9444ae6b908fd48cf731466, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timerLimit: 40
+  _timerViewPrefab: {fileID: -5257038841165256808, guid: 953e6744061857142ba042282458b3a3,
+    type: 3}
+  _timerCanvasTransform: {fileID: 206153367}
+  _progressViewType: 0
+  _imagesProgressViewPrefab: {fileID: 4193082882094581298, guid: 8c74ef9b9e133e444a29cc3b69d7e388,
+    type: 3}
+  _sliderProgressViewPrefab: {fileID: 4379175616034263999, guid: 8a13272798ec6c045819fe138a8b187e,
+    type: 3}
 --- !u!1 &206153363
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,7 +189,7 @@ GameObject:
   - component: {fileID: 206153365}
   - component: {fileID: 206153364}
   m_Layer: 5
-  m_Name: WalletCanvas
+  m_Name: TimerCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -436,3 +489,4 @@ SceneRoots:
   - {fileID: 330585546}
   - {fileID: 206153367}
   - {fileID: 1959975783}
+  - {fileID: 170960195}

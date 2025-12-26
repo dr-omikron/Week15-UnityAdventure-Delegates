@@ -24,7 +24,7 @@ namespace Develop._1.Wallet
 
                 return;
             }
-            
+
             if(_account.ContainsKey(currency))
             {
                 _account[currency] += amount;
