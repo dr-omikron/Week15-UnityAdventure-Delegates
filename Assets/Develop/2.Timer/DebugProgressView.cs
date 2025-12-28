@@ -7,8 +7,13 @@ namespace Develop._2.Timer
     {
         public void UpdateProgress(float progress, float limit)
         {
-            string elapsedTime =TimeSpan.FromSeconds(progress).ToString(@"mm\:ss");
-            Debug.Log($"Elapsed Time - {elapsedTime}");
+            string currentTime =TimeSpan.FromSeconds(progress).ToString(@"mm\:ss");
+            Debug.Log($"Current Time - {currentTime}");
+        }
+
+        public void ResetProgress(float limit)
+        {
+            Debug.Log($"Timer has been reset. Current Time - {limit}");
         }
     }
 }

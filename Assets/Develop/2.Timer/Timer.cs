@@ -7,9 +7,10 @@ namespace Develop._2.Timer
     public class Timer
     {
         public event Action<float, float> Ticked;
+        public event Action<float> Reset;
 
         private float _timeLimit;
-        private float _elapsedTime;
+        private float _currentTime;
 
         private readonly MonoBehaviour _coroutineRunner;
         private Coroutine _process;
@@ -19,12 +20,18 @@ namespace Develop._2.Timer
             _coroutineRunner = coroutineRunner;
         }
 
-        public void StartProcess(float time)
+        public void SetTime(float time)
         {
+            if(time <= 0)
+                Debug.LogError("Time must be greater than zero");
+
             _timeLimit = time;
+            _currentTime = _timeLimit;
+        }
 
+        public void StartProcess()
+        {
             StopProcess();
-
             _process = _coroutineRunner.StartCoroutine(Process());
         }
 
@@ -37,12 +44,12 @@ namespace Develop._2.Timer
             }
         }
 
-        public void Reset()
+        public void ResetTime()
         {
             if(InProcess() == false)
             {
-                _elapsedTime = 0;
-                Ticked?.Invoke(_elapsedTime, _timeLimit);
+                _currentTime = _timeLimit;
+                Reset?.Invoke(_timeLimit);
             }
         }
 
@@ -50,14 +57,14 @@ namespace Develop._2.Timer
 
         private IEnumerator Process()
         {
-            while (_elapsedTime < _timeLimit)
+            while (_currentTime > 0)
             {
-                _elapsedTime += Time.deltaTime;
+                _currentTime -= Time.deltaTime;
 
-                if(_elapsedTime > _timeLimit)
-                    _elapsedTime = _timeLimit;
+                if(_currentTime > _timeLimit)
+                    _currentTime = _timeLimit;
 
-                Ticked?.Invoke(_elapsedTime, _timeLimit);
+                Ticked?.Invoke(_currentTime, _timeLimit);
 
                 yield return null;
             }

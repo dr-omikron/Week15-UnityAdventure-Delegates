@@ -3,5 +3,6 @@
     public interface IProgressUpdater
     {
         void UpdateProgress(float progress, float limit);
+        void ResetProgress(float limit);
     }
 }

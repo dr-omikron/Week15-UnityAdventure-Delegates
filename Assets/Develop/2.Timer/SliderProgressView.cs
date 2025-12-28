@@ -9,13 +9,15 @@ namespace Develop._2.Timer
 
         private void Awake()
         {
-            Reset();
+            ResetView();
         }
 
         public void UpdateProgress(float progress, float limit)
         {
             SetPercent(progress / limit);
         }
+
+        public void ResetProgress(float limit) => ResetView();
 
         private void SetPercent(float percent)
         {
@@ -28,6 +30,6 @@ namespace Develop._2.Timer
             _slider.fillAmount = percent;
         }
 
-        private void Reset() => _slider.fillAmount = 0;
+        private void ResetView() => _slider.fillAmount = 1;
     }
 }

@@ -167,11 +167,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d7b3514a9444ae6b908fd48cf731466, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timerLimit: 40
+  _timerLimit: 10
   _timerViewPrefab: {fileID: -5257038841165256808, guid: 953e6744061857142ba042282458b3a3,
     type: 3}
   _timerCanvasTransform: {fileID: 206153367}
-  _progressViewType: 0
+  _progressViewType: 1
   _imagesProgressViewPrefab: {fileID: 4193082882094581298, guid: 8c74ef9b9e133e444a29cc3b69d7e388,
     type: 3}
   _sliderProgressViewPrefab: {fileID: 4379175616034263999, guid: 8a13272798ec6c045819fe138a8b187e,

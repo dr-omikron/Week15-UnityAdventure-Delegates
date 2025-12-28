@@ -6,49 +6,50 @@ namespace Develop._2.Timer
 {
     public class ImagesProgressView : MonoBehaviour, IProgressUpdater
     {
+        private const float StepThreshold = 0.99f;
+        
         [SerializeField] private List<Image> _images;
 
         private int _maxSize;
         private int _iterator;
         private float _lastProgress;
 
-        private void Awake()
+        public void Initialize(float timeLimit)
         {
             _maxSize = _images.Count;
-            Reset();
+            ResetView(timeLimit);
         }
 
         public void UpdateProgress(float progress, float limit)
         {
-            if(progress == 0)
-                Reset();
-
             float step = limit / _maxSize;
-            float currentProgress = progress - _lastProgress;
+            float currentProgress = _lastProgress - progress;
 
-            if(currentProgress / step >= 1)
+            if(currentProgress / step >= StepThreshold)
             {
-                ShowNext();
+                NextStep();
                 _lastProgress = progress;
             }
         }
 
-        private void ShowNext()
+        public void ResetProgress(float limit) => ResetView(limit);
+
+        private void NextStep()
         {
-            if (_iterator >= _maxSize)
+            if (_iterator < 0)
                 return;
 
-            _images[_iterator].gameObject.SetActive(true);
-            _iterator++;
+            _images[_iterator].gameObject.SetActive(false);
+            _iterator--;
         }
 
-        private void Reset()
+        private void ResetView(float timeLimit)
         {
-            _iterator = 0;
-            _lastProgress = 0;
+            _iterator = _maxSize - 1;
+            _lastProgress = timeLimit;
 
             foreach (Image image in _images)
-                image.gameObject.SetActive(false);
+                image.gameObject.SetActive(true);
         }
     }
 }

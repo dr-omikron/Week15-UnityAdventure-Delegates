@@ -21,6 +21,8 @@ namespace Develop._2.Timer
         private void Start()
         {
             _timer = new Timer(this);
+            _timer.SetTime(_timerLimit);
+
             _playerInput = new PlayerInput();
 
             _playerInput.StartTimer += OnStartTimerKeyDown;
@@ -30,7 +32,7 @@ namespace Develop._2.Timer
             if (_timerViewPrefab != null)
             {
                 _timerView = Instantiate(_timerViewPrefab, _timerCanvasTransform);
-                _timerView.Initialize(_timer, _timerLimit);
+                _timerView.Initialize(_timer);
 
                 _progressUpdater = CreateProgressView();
             }
@@ -40,6 +42,7 @@ namespace Develop._2.Timer
             }
 
             _timer.Ticked += _progressUpdater.UpdateProgress;
+            _timer.Reset += _progressUpdater.ResetProgress;
         }
 
         private void Update()
@@ -54,6 +57,7 @@ namespace Develop._2.Timer
             _playerInput.ResetTimer -= OnResetTimerKeyDown;
 
             _timer.Ticked -= _progressUpdater.UpdateProgress;
+            _timer.Reset -= _progressUpdater.ResetProgress;
         }
 
         private IProgressUpdater CreateProgressView()
@@ -61,7 +65,11 @@ namespace Develop._2.Timer
             IProgressUpdater progressUpdater = null;
 
             if(_progressViewType == ProgressViewType.Image)
-                progressUpdater = Instantiate(_imagesProgressViewPrefab, _timerView.transform);
+            {
+                ImagesProgressView imagesProgressView = Instantiate(_imagesProgressViewPrefab, _timerView.transform);
+                imagesProgressView.Initialize(_timerLimit);
+                progressUpdater = imagesProgressView;
+            }
 
             if(_progressViewType == ProgressViewType.Slider)
                 progressUpdater = Instantiate(_sliderProgressViewPrefab, _timerView.transform);
@@ -69,8 +77,8 @@ namespace Develop._2.Timer
             return progressUpdater;
         }
 
-        private void OnStartTimerKeyDown() => _timer.StartProcess(_timerLimit);
+        private void OnStartTimerKeyDown() => _timer.StartProcess();
         private void OnStopTimerKeyDown() => _timer.StopProcess();
-        private void OnResetTimerKeyDown() => _timer.Reset();
+        private void OnResetTimerKeyDown() => _timer.ResetTime();
     }
 }
