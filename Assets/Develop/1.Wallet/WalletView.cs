@@ -1,50 +1,29 @@
-using System;
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Develop._1.Wallet
 {
     public class WalletView : MonoBehaviour
     {
-        [SerializeField] private TMP_Text _coinsCountText;
-        [SerializeField] private TMP_Text _diamondsCountText;
-        [SerializeField] private TMP_Text _energyCountText;
-
-        [SerializeField] private Button _addCoinButton;
-        [SerializeField] private Button _spendCoinButton;
-
-        [SerializeField] private Button _addDiamondButton;
-        [SerializeField] private Button _spendDiamondButton;
-
-        [SerializeField] private Button _addEnergyButton;
-        [SerializeField] private Button _spendEnergyButton;
-
-        private int _addCurrencyAmount;
-        private int _spendCurrencyAmount;
+        [SerializeField] private RectTransform _currencyContainerTransform;
 
         private Wallet _wallet;
-        private WalletManager _walletManager;
+        private List<CurrencyView> _currencies;
 
-        public void Initialize(Wallet wallet, WalletManager walletManager, int addCurrencyAmount, int spendCurrencyAmount)
+        public void Initialize(Wallet wallet, List<CurrencyView> currencies) 
         {
             _wallet = wallet;
-            _walletManager = walletManager;
-
-            _addCurrencyAmount = addCurrencyAmount;
-            _spendCurrencyAmount = spendCurrencyAmount;
+            _currencies = currencies;
 
             _wallet.CurrencyAdded += OnCurrencyChanged;
             _wallet.CurrencySpent += OnCurrencyChanged;
 
-            _addCoinButton.onClick.AddListener(OnAddCoinButtonClick);
-            _spendCoinButton.onClick.AddListener(OnSpendCoinButtonClick);
-
-            _addDiamondButton.onClick.AddListener(OnAddDiamondButtonClick);
-            _spendDiamondButton.onClick.AddListener(OnSpendDiamondButtonClick);
-
-            _addEnergyButton.onClick.AddListener(OnAddEnergyButtonClick);
-            _spendEnergyButton.onClick.AddListener(OnSpendEnergyButtonClick);
+            foreach (CurrencyView currency in _currencies)
+            {
+                currency.transform.SetParent(_currencyContainerTransform, false);
+                currency.OnAddButtonClicked += OnAddCurrencyButtonClick;
+                currency.OnSpendButtonClicked += OnSpendCurrencyButtonClick;
+            }
         }
 
         private void OnDestroy()
@@ -52,43 +31,22 @@ namespace Develop._1.Wallet
             _wallet.CurrencyAdded -= OnCurrencyChanged;
             _wallet.CurrencySpent -= OnCurrencyChanged;
 
-            _addCoinButton.onClick.RemoveListener(OnAddCoinButtonClick);
-            _spendCoinButton.onClick.RemoveListener(OnSpendCoinButtonClick);
-
-            _addDiamondButton.onClick.RemoveListener(OnAddDiamondButtonClick);
-            _spendDiamondButton.onClick.RemoveListener(OnSpendDiamondButtonClick);
-
-            _addEnergyButton.onClick.RemoveListener(OnAddEnergyButtonClick);
-            _spendEnergyButton.onClick.RemoveListener(OnSpendEnergyButtonClick);
+            foreach (CurrencyView currency in _currencies)
+            {
+                currency.OnAddButtonClicked -= OnAddCurrencyButtonClick;
+                currency.OnSpendButtonClicked -= OnSpendCurrencyButtonClick;
+            }
         }
 
-        private void OnAddCoinButtonClick() => _walletManager.AddCoins(_addCurrencyAmount);
-        private void OnSpendCoinButtonClick() => _walletManager.SpendCoins(_spendCurrencyAmount);
-
-        private void OnAddDiamondButtonClick() => _walletManager.AddDiamonds(_addCurrencyAmount);
-        private void OnSpendDiamondButtonClick() => _walletManager.SpendDiamonds(_spendCurrencyAmount);
-
-        private void OnAddEnergyButtonClick() => _walletManager.AddEnergy(_addCurrencyAmount);
-        private void OnSpendEnergyButtonClick() => _walletManager.SpendEnergy(_spendCurrencyAmount);
+        private void OnAddCurrencyButtonClick(CurrencyType currencyType, int amount) => _wallet.AddCurrency(currencyType, amount);
+        private void OnSpendCurrencyButtonClick(CurrencyType currencyType, int amount) => _wallet.SpendCurrency(currencyType, amount);
 
         private void OnCurrencyChanged(CurrencyType currencyType, int amount)
         {
-            switch (currencyType)
+            foreach (CurrencyView currency in _currencies)
             {
-                case CurrencyType.Coin:
-                    _coinsCountText.text = amount.ToString();
-                    break;
-
-                case CurrencyType.Diamond:
-                    _diamondsCountText.text = amount.ToString();
-                    break;
-
-                case CurrencyType.Energy:
-                    _energyCountText.text = amount.ToString();
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(currencyType), currencyType, null);
+                if(currency.CurrencyType ==  currencyType)
+                    currency.SetCurrencyText(amount.ToString());
             }
         }
 

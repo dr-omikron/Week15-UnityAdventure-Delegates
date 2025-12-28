@@ -167,11 +167,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbf22a4c87444ecfa62a1db94e493428, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _walletViewPrefab: {fileID: 1378006749151316076, guid: 9e39afecc68e3ab489448442f69de06f,
-    type: 3}
+  _walletViewPrefab: {fileID: 0}
   _canvasTransform: {fileID: 206153367}
-  _addCurrencyAmount: 1
-  _spendCurrencyAmount: 1
+  _currencyViewPrefab: {fileID: 3767214620529991671, guid: f40c2b99531ee93448099ec6d58fd724,
+    type: 3}
+  _currencySettings:
+  - CurrencyIcon: {fileID: 21300000, guid: c28aec432a81b6345954f50e719367a7, type: 3}
+    Type: 0
+    StartAmount: 0
+    AddAmount: 10
+    SpendAmount: 10
+  - CurrencyIcon: {fileID: 21300000, guid: 53ae1d44bfd46ee40bb991c22a006e95, type: 3}
+    Type: 1
+    StartAmount: 0
+    AddAmount: 1
+    SpendAmount: 1
+  - CurrencyIcon: {fileID: 21300000, guid: 5af0e59c12fc55546a992b54f1eef5ff, type: 3}
+    Type: 2
+    StartAmount: 0
+    AddAmount: 5
+    SpendAmount: 5
 --- !u!1 &206153363
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Develop._1.Wallet
@@ -8,39 +7,39 @@ namespace Develop._1.Wallet
     {
         [SerializeField] private WalletView _walletViewPrefab;
         [SerializeField] private RectTransform _canvasTransform;
+        [SerializeField] private CurrencyView _currencyViewPrefab;
 
-        [SerializeField] private int _addCurrencyAmount;
-        [SerializeField] private int _spendCurrencyAmount;
+        [SerializeField] private List<CurrencySetting> _currencySettings;
 
-        private WalletManager _walletManager;
+        private Wallet _wallet;
         private WalletView _walletView;
         private PlayerInput _playerInput;
+
+        private Queue<CurrencySetting> _currencySettingsQueue;
+        private CurrencySetting _currentCurrency;
 
         private void Awake()
         {
             Dictionary<CurrencyType, int> currencies = new Dictionary<CurrencyType, int>();
-            int currenciesCount = Enum.GetValues(typeof(CurrencyType)).Length;
 
-            for (int i = 0; i < currenciesCount; i++)
-                currencies.Add((CurrencyType)i, 0);
+            foreach (CurrencySetting currencySetting in _currencySettings)
+                currencies.Add(currencySetting.Type, currencySetting.StartAmount);
 
-            Wallet wallet = new Wallet(currencies);
-            _walletManager = new WalletManager(wallet);
+            _wallet = new Wallet(currencies);
 
             if(_walletViewPrefab != null)
             {
-                _walletView = Instantiate(_walletViewPrefab, _canvasTransform);
-                _walletView.Initialize(wallet, _walletManager, _addCurrencyAmount, _spendCurrencyAmount);
+                CreateWalletView();
             }
+
+            _currencySettingsQueue = new Queue<CurrencySetting>(_currencySettings);
+            _currentCurrency = SwitchCurrency();
 
             _playerInput = new PlayerInput();
 
-            _playerInput.AddCoinKeyDown += OnAddCoinKeyDown;
-            _playerInput.SpendCoinKeyDown += OnSpendCoinKeyDown;
-            _playerInput.AddDiamondKeyDown += OnAddDiamondKeyDown;
-            _playerInput.SpendDiamondKeyDown += OnSpendDiamondKeyDown;
-            _playerInput.AddEnergyKeyDown += OnAddEnergyKeyDown;
-            _playerInput.SpendEnergyKeyDown += OnSpendEnergyKeyDown;
+            _playerInput.AddCurrencyKeyDown += OnAddCurrencyKeyDown;
+            _playerInput.SpendCurrencyKeyDown+= OnSpendCurrencyKeyDown;
+            _playerInput.SwitchCurrencyKeyDown += OnSwitchCurrencyKeyDown;
         }
 
         private void Update()
@@ -50,21 +49,37 @@ namespace Develop._1.Wallet
 
         private void OnDestroy()
         {
-            _playerInput.AddCoinKeyDown -= OnAddCoinKeyDown;
-            _playerInput.SpendCoinKeyDown -= OnSpendCoinKeyDown;
-            _playerInput.AddDiamondKeyDown -= OnAddDiamondKeyDown;
-            _playerInput.SpendDiamondKeyDown -= OnSpendDiamondKeyDown;
-            _playerInput.AddEnergyKeyDown -= OnAddEnergyKeyDown;
-            _playerInput.SpendEnergyKeyDown -= OnSpendEnergyKeyDown;
+            _playerInput.AddCurrencyKeyDown -= OnAddCurrencyKeyDown;
+            _playerInput.SpendCurrencyKeyDown -= OnSpendCurrencyKeyDown;
+            _playerInput.SwitchCurrencyKeyDown -= OnSwitchCurrencyKeyDown;
         }
 
-        private void OnAddCoinKeyDown() => _walletManager.AddCoins(_addCurrencyAmount);
-        private void OnSpendCoinKeyDown() => _walletManager.SpendCoins(_spendCurrencyAmount);
+        private void CreateWalletView()
+        {
+            _walletView = Instantiate(_walletViewPrefab, _canvasTransform);
+            List<CurrencyView> currencyViews  = new List<CurrencyView>();
 
-        private void OnAddDiamondKeyDown() => _walletManager.AddDiamonds(_addCurrencyAmount);
-        private void OnSpendDiamondKeyDown() => _walletManager.SpendDiamonds(_spendCurrencyAmount);
+            foreach (CurrencySetting currencySetting in _currencySettings)
+            {
+                CurrencyView currencyView = Instantiate(_currencyViewPrefab);
 
-        private void OnAddEnergyKeyDown() => _walletManager.AddEnergy(_addCurrencyAmount);
-        private void OnSpendEnergyKeyDown() => _walletManager.SpendEnergy(_spendCurrencyAmount);
+                currencyView.Initialize(currencySetting.Type, currencySetting.CurrencyIcon, currencySetting.AddAmount, currencySetting.SpendAmount);
+                currencyViews.Add(currencyView);
+            }
+
+            _walletView.Initialize(_wallet, currencyViews);
+        }
+
+        private CurrencySetting SwitchCurrency()
+        {
+            CurrencySetting setting = _currencySettingsQueue.Dequeue();
+            _currencySettingsQueue.Enqueue(setting);
+            return setting;
+        }
+
+        private void OnSwitchCurrencyKeyDown() => _currentCurrency = SwitchCurrency();
+        private void OnAddCurrencyKeyDown() => _wallet.AddCurrency(_currentCurrency.Type, _currentCurrency.AddAmount);
+        private void OnSpendCurrencyKeyDown() => _wallet.SpendCurrency(_currentCurrency.Type, _currentCurrency.SpendAmount);
+
     }
 }

@@ -16,7 +16,7 @@ namespace Develop._1.Wallet
             _account = currencies;
         }
 
-        public void AddCurrencyAmount(CurrencyType currency, int amount)
+        public void AddCurrency(CurrencyType currency, int amount)
         {
             if(amount < 0)
             {
@@ -68,7 +68,8 @@ namespace Develop._1.Wallet
             PrintInvalidKeyWarning(currency);
         }
 
-        private void PrintWalletOperation(CurrencyType currency, int amount) => Debug.Log($"Added {amount} to {currency}. Total amount is {_account[currency]}");
+        private void PrintWalletOperation(CurrencyType currency, int amount) 
+            => Debug.Log($"Added {amount} to {currency}. Total amount is {_account[currency]}");
         private void PrintNegativeValueWarning() => Debug.Log("Currency amount cannot be negative");
         private void PrintInvalidKeyWarning(CurrencyType currency) => Debug.Log("Can't find currency " + currency);
     }
