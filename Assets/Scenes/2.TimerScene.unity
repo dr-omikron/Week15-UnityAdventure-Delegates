@@ -171,7 +171,7 @@ MonoBehaviour:
   _timerViewPrefab: {fileID: -5257038841165256808, guid: 953e6744061857142ba042282458b3a3,
     type: 3}
   _timerCanvasTransform: {fileID: 206153367}
-  _progressViewType: 1
+  _progressViewType: 0
   _imagesProgressViewPrefab: {fileID: 4193082882094581298, guid: 8c74ef9b9e133e444a29cc3b69d7e388,
     type: 3}
   _sliderProgressViewPrefab: {fileID: 4379175616034263999, guid: 8a13272798ec6c045819fe138a8b187e,

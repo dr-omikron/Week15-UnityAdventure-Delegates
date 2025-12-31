@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Develop._3.EnemyDestroyer
@@ -40,22 +39,22 @@ namespace Develop._3.EnemyDestroyer
         {
             while(destroyable != null)
             {
-                foreach (Func<bool> destroyCondition in destroyable.DestroyConditions.ToList())
+                int count = destroyable.DestroyConditions.Count;
+
+                for (int i = 0; i < count; i++)
                 {
-                    yield return new WaitUntil(destroyCondition.Invoke);
-
-                    if (destroyable != null)
-                    {
-                        destroyable.Destroy();
-                        _destroyableStorage.Remove(destroyable);
-
-                        if(destroyable.Counter != _maxStorageCount)
-                            foreach (IDestroyable stored in _destroyableStorage)
-                                stored.AddCounter(-1, _maxStorageCount);
-                    }
-
-                    destroyable = null;
+                    yield return new WaitUntil(destroyable.DestroyConditions[i].Invoke);
+                    count =  destroyable.DestroyConditions.Count;
                 }
+
+                destroyable.Destroy();
+                _destroyableStorage.Remove(destroyable);
+
+                if(destroyable.Counter != _maxStorageCount)
+                    foreach (IDestroyable stored in _destroyableStorage)
+                        stored.AddCounter(-1, _maxStorageCount);
+
+                destroyable = null;
 
                 yield return null;
             }
