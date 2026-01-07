@@ -13,7 +13,7 @@ namespace Develop._1.Wallet
         public void Initialize(Wallet wallet, List<CurrencyView> currencies) 
         {
             _wallet = wallet;
-            _currencies = currencies;
+            _currencies = new List<CurrencyView>(currencies);
 
             _wallet.CurrencyAdded += OnCurrencyChanged;
             _wallet.CurrencySpent += OnCurrencyChanged;
@@ -39,13 +39,13 @@ namespace Develop._1.Wallet
         }
 
         private void OnAddCurrencyButtonClick(CurrencyType currencyType, int amount) => _wallet.AddCurrency(currencyType, amount);
-        private void OnSpendCurrencyButtonClick(CurrencyType currencyType, int amount) => _wallet.SpendCurrency(currencyType, amount);
+        private void OnSpendCurrencyButtonClick(CurrencyType currencyType, int amount) => _wallet.TrySpendCurrency(currencyType, amount);
 
         private void OnCurrencyChanged(CurrencyType currencyType, int amount)
         {
             foreach (CurrencyView currency in _currencies)
             {
-                if(currency.CurrencyType ==  currencyType)
+                if(currency.CurrencyType == currencyType)
                     currency.SetCurrencyText(amount.ToString());
             }
         }

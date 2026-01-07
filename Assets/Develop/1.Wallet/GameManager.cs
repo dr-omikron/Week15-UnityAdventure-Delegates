@@ -79,7 +79,7 @@ namespace Develop._1.Wallet
 
         private void OnSwitchCurrencyKeyDown() => _currentCurrency = SwitchCurrency();
         private void OnAddCurrencyKeyDown() => _wallet.AddCurrency(_currentCurrency.Type, _currentCurrency.AddAmount);
-        private void OnSpendCurrencyKeyDown() => _wallet.SpendCurrency(_currentCurrency.Type, _currentCurrency.SpendAmount);
+        private void OnSpendCurrencyKeyDown() => _wallet.TrySpendCurrency(_currentCurrency.Type, _currentCurrency.SpendAmount);
 
     }
 }

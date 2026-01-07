@@ -13,12 +13,12 @@ namespace Develop._1.Wallet
 
         public Wallet(Dictionary<CurrencyType, int> currencies)
         {
-            _account = currencies;
+            _account = new Dictionary<CurrencyType, int>(currencies);
         }
 
         public void AddCurrency(CurrencyType currency, int amount)
         {
-            if(amount < 0)
+            if(amount <= 0)
             {
                 PrintNegativeValueWarning();
 
@@ -37,24 +37,22 @@ namespace Develop._1.Wallet
             PrintInvalidKeyWarning(currency);
         }
 
-        public void SpendCurrency(CurrencyType currency, int amount)
+        public bool TrySpendCurrency(CurrencyType currency, int amount)
         {
             if(amount < 0)
             {
                 PrintNegativeValueWarning();
 
-                return;
+                return false;
             }
 
             if(_account.ContainsKey(currency))
             {
                 if(_account[currency] - amount < 0)
                 {
-                    _account[currency] = 0;
-                    CurrencySpent?.Invoke(currency, 0);
+                    PrintNotEnoughWarning();
 
-                    PrintWalletOperation(currency, amount);
-                    return;
+                    return false;
                 }
 
                 _account[currency] -= amount;
@@ -62,15 +60,18 @@ namespace Develop._1.Wallet
 
                 PrintWalletOperation(currency, amount);
 
-                return;
+                return true;
             }
 
             PrintInvalidKeyWarning(currency);
+
+            return false;
         }
 
         private void PrintWalletOperation(CurrencyType currency, int amount) 
             => Debug.Log($"Added {amount} to {currency}. Total amount is {_account[currency]}");
         private void PrintNegativeValueWarning() => Debug.Log("Currency amount cannot be negative");
+        private void PrintNotEnoughWarning() => Debug.Log("In account not enough currency amount");
         private void PrintInvalidKeyWarning(CurrencyType currency) => Debug.Log("Can't find currency " + currency);
     }
 }

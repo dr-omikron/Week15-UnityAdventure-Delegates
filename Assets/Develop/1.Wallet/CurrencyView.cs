@@ -32,6 +32,12 @@ namespace Develop._1.Wallet
             _spendButton.onClick.AddListener(OnSpendCurrencyButtonClick);
         }
 
+        private void OnDestroy()
+        {
+            _addButton.onClick.RemoveListener(OnAddCurrencyButtonClick);
+            _spendButton.onClick.RemoveListener(OnSpendCurrencyButtonClick);
+        }
+
         public void SetCurrencyText(string text) => _currencyText.text = text;
         private void OnAddCurrencyButtonClick() => OnAddButtonClicked?.Invoke(_currencyType, _addAmount);
         private void OnSpendCurrencyButtonClick() => OnSpendButtonClicked?.Invoke(_currencyType, _spendAmount);
