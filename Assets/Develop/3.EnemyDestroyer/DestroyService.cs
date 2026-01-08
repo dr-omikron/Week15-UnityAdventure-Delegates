@@ -8,51 +8,37 @@ namespace Develop._3.EnemyDestroyer
     public class DestroyService
     {
         private readonly MonoBehaviour _coroutineRunner;
-        private readonly int _maxStorageCount;
 
-        private readonly List<IDestroyable> _destroyableStorage = new List<IDestroyable>();
+        private readonly Dictionary<IDestroyable, Func<bool>> _destroyableStorage = new Dictionary<IDestroyable, Func<bool>>();
         private readonly List<Coroutine> _processes = new List<Coroutine>();
 
         public DestroyService(MonoBehaviour coroutineRunner, int maxStorageCount)
         {
             _coroutineRunner = coroutineRunner;
-            _maxStorageCount = maxStorageCount;
+            MaxStorageCount = maxStorageCount;
         }
+
+        public int MaxStorageCount { get; }
 
         public int StorageCount => _destroyableStorage.Count;
 
-        public void AddToStorage(IDestroyable destroyable)
+        public void AddToStorage(IDestroyable destroyable, Func<bool> destroyReason)
         {
-            if (_destroyableStorage.Contains(destroyable))
+            if (_destroyableStorage.TryAdd(destroyable, destroyReason) == false)
                 return;
 
-            _destroyableStorage.Add(destroyable);
-
-            foreach (IDestroyable stored in _destroyableStorage)
-                stored.AddCounter(1, _maxStorageCount);
-
-            Coroutine process = _coroutineRunner.StartCoroutine(CheckDestroyProcess(destroyable, OnDestroyProcessEnd));
+            Coroutine process = _coroutineRunner.StartCoroutine(CheckDestroyProcess(destroyable, destroyReason, OnDestroyProcessEnd));
             _processes.Add(process);
         }
 
-        private IEnumerator CheckDestroyProcess(IDestroyable destroyable, Action callback)
+        private IEnumerator CheckDestroyProcess(IDestroyable destroyable, Func<bool> destroyReason, Action callback)
         {
             while(destroyable != null)
             {
-                int count = destroyable.DestroyConditions.Count;
-
-                for (int i = 0; i < count; i++)
-                {
-                    yield return new WaitUntil(destroyable.DestroyConditions[i].Invoke);
-                    count =  destroyable.DestroyConditions.Count;
-                }
+                yield return new WaitUntil(destroyReason.Invoke);
 
                 destroyable.Destroy();
                 _destroyableStorage.Remove(destroyable);
-
-                if(destroyable.Counter != _maxStorageCount)
-                    foreach (IDestroyable stored in _destroyableStorage)
-                        stored.AddCounter(-1, _maxStorageCount);
 
                 destroyable = null;
 

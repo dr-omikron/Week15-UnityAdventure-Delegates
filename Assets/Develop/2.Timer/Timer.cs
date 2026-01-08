@@ -53,7 +53,7 @@ namespace Develop._2.Timer
             }
         }
 
-        private bool InProcess() => _process != null;
+        public bool InProcess() => _process != null;
 
         private IEnumerator Process()
         {
